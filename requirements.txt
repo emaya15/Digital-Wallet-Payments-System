@@ -1,0 +1,23 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+websockets==13.1
+pydantic==2.10.4
+pydantic-settings==2.7.0
+email-validator==2.2.0
+SQLAlchemy==2.0.36
+PyMySQL==1.1.1
+cryptography==44.0.0
+alembic==1.14.0
+python-jose[cryptography]==3.3.0
+passlib==1.7.4
+bcrypt==4.0.1
+python-multipart==0.0.20
+python-dotenv==1.0.1
+APScheduler==3.11.0
+razorpay==1.4.2
+setuptools<81  # razorpay imports pkg_resources
+qrcode==8.0
+Pillow==11.1.0
+reportlab==4.2.5
+httpx==0.28.1
+pytest==8.3.4

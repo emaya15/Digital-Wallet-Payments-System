@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=caching_sha2_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: digital_wallet
+      MYSQL_USER: wallet_user
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-wallet_password}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: mysql+pymysql://wallet_user:${MYSQL_PASSWORD:-wallet_password}@db:3306/digital_wallet
+    ports:
+      - "8000:8000"
+    volumes:
+      - statements_data:/app/statements
+
+volumes:
+  mysql_data:
+  statements_data:

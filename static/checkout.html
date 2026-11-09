@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayWave | Digital Wallet</title>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #10172e, #263b70, #167b91);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            color: white;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand h1 {
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        .brand span {
+            color: #55e6c1;
+        }
+
+        .brand p {
+            color: #c5d2eb;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 22px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .card h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #c5d2eb;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 17px 0 8px;
+            font-size: 13px;
+            color: #dce7ff;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            outline: none;
+            background: rgba(10, 20, 45, 0.55);
+            color: white;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #55e6c1;
+        }
+
+        .amount {
+            text-align: center;
+            padding: 22px;
+            margin: 22px 0;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+        }
+
+        .amount small {
+            color: #c5d2eb;
+        }
+
+        .amount h1 {
+            font-size: 38px;
+            margin-top: 8px;
+            color: #55e6c1;
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #55e6c1, #27c6a3);
+            color: #102c39;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(85, 230, 193, 0.25);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            display: none;
+            margin-top: 22px;
+            padding: 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .result h3 {
+            color: #55e6c1;
+            margin-bottom: 15px;
+        }
+
+        .result label {
+            margin-top: 12px;
+        }
+
+        .result input {
+            font-size: 12px;
+        }
+
+        .copy-btn {
+            margin-top: 8px;
+            padding: 9px;
+            font-size: 12px;
+            background: #dce7ff;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #ffe29a;
+            overflow-wrap: anywhere;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #c5d2eb;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="brand">
+        <h1>Pay<span>Wave</span></h1>
+        <p>Secure Digital Wallet Payments</p>
+    </div>
+
+    <div class="card">
+
+        <h2>Add Money to Wallet</h2>
+        <p class="subtitle">Complete your secure test payment.</p>
+
+        <label>Razorpay Test Key ID</label>
+        <input type="text" id="keyId"
+               placeholder="rzp_test_xxxxxxxxx">
+
+        <label>Razorpay Order ID</label>
+        <input type="text" id="orderId"
+               placeholder="order_xxxxxxxxx">
+
+        <label>Order Amount (in paise)</label>
+        <input type="number" id="amount"
+               value="20000" min="100">
+
+        <div class="amount">
+            <small>Amount to Pay</small>
+            <h1 id="displayAmount">₹200.00</h1>
+        </div>
+
+        <button id="payButton" onclick="payNow()">
+            Pay Securely →
+        </button>
+
+        <div id="message"></div>
+
+        <div class="result" id="result">
+            <h3>✓ Payment Response</h3>
+
+            <label>Order ID</label>
+            <input id="responseOrder" readonly>
+            <button class="copy-btn"
+                    onclick="copyValue('responseOrder')">
+                Copy Order ID
+            </button>
+
+            <label>Payment ID</label>
+            <input id="responsePayment" readonly>
+            <button class="copy-btn"
+                    onclick="copyValue('responsePayment')">
+                Copy Payment ID
+            </button>
+
+            <label>Payment Signature</label>
+            <input id="responseSignature" readonly>
+            <button class="copy-btn"
+                    onclick="copyValue('responseSignature')">
+                Copy Signature
+            </button>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Test Mode Only · Powered by Razorpay
+    </div>
+
+</div>
+
+<script>
+    const amountInput = document.getElementById("amount");
+
+    amountInput.addEventListener("input", function () {
+        const amount = Number(this.value);
+
+        document.getElementById("displayAmount").textContent =
+            Number.isFinite(amount) && amount >= 0
+                ? "₹" + (amount / 100).toFixed(2)
+                : "₹0.00";
+    });
+
+    function payNow() {
+        const keyId = document.getElementById("keyId").value.trim();
+        const orderId = document.getElementById("orderId").value.trim();
+        const amount = Number(amountInput.value);
+        const message = document.getElementById("message");
+        const button = document.getElementById("payButton");
+
+        message.textContent = "";
+
+        if (!keyId.startsWith("rzp_test_")) {
+            message.textContent = "Enter a valid Razorpay TEST Key ID.";
+            return;
+        }
+
+        if (!orderId.startsWith("order_")) {
+            message.textContent = "Enter your Razorpay Order ID.";
+            return;
+        }
+
+        if (!Number.isInteger(amount) || amount <= 0) {
+            message.textContent = "Enter a valid amount in paise.";
+            return;
+        }
+
+        if (typeof Razorpay === "undefined") {
+            message.textContent =
+                "Razorpay Checkout failed to load. Check your internet connection and reload.";
+            return;
+        }
+
+        const options = {
+            key: keyId,
+            amount: amount,
+            currency: "INR",
+            name: "PayWave Wallet",
+            description: "Add money to your digital wallet",
+            order_id: orderId,
+
+            handler: function (response) {
+                document.getElementById("responseOrder").value =
+                    response.razorpay_order_id;
+
+                document.getElementById("responsePayment").value =
+                    response.razorpay_payment_id;
+
+                document.getElementById("responseSignature").value =
+                    response.razorpay_signature;
+
+                document.getElementById("result").style.display = "block";
+
+                message.textContent =
+                    "Payment response received. Now confirm it using your backend API.";
+
+                button.disabled = false;
+                button.textContent = "Pay Securely →";
+            },
+
+            modal: {
+                ondismiss: function () {
+                    message.textContent = "Payment window closed.";
+                    button.disabled = false;
+                    button.textContent = "Pay Securely →";
+                }
+            },
+
+            theme: {
+                color: "#27c6a3"
+            }
+        };
+
+        try {
+            const checkout = new Razorpay(options);
+
+            checkout.on("payment.failed", function (response) {
+                message.textContent =
+                    "Payment failed: " +
+                    (response.error.description || "Please try again.");
+
+                button.disabled = false;
+                button.textContent = "Pay Securely →";
+            });
+
+            button.disabled = true;
+            button.textContent = "Opening Checkout...";
+
+            checkout.open();
+
+        } catch (error) {
+            message.textContent = "Error: " + error.message;
+            button.disabled = false;
+            button.textContent = "Pay Securely →";
+        }
+    }
+
+    function copyValue(id) {
+        const value = document.getElementById(id).value;
+
+        if (!value) return;
+
+        navigator.clipboard.writeText(value)
+            .then(() => {
+                document.getElementById("message").textContent =
+                    "Copied successfully!";
+            })
+            .catch(() => {
+                document.getElementById("message").textContent =
+                    "Copy failed. Select and copy the value manually.";
+            });
+    }
+</script>
+
+</body>
+</html>

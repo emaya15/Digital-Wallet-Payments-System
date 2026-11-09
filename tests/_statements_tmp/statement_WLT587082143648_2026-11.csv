@@ -1,0 +1,16 @@
+Account Holder,Test User 50
+Wallet Number,WLT587082143648
+Statement Period,01 Nov 2026 to 30 Nov 2026
+Generated On,03 Nov 2026 12:23 IST
+
+Date,Reference,Type,Description,Credit,Debit,Balance
+2026-11-03 12:23,TXN907DF40D146644C4,Add Money,Added via UPI,1000.00,,1000.00
+2026-11-03 12:23,TXN025BA28404C64871,P2P Transfer,P2P Transfer,,10.00,990.00
+2026-11-03 12:23,TXNC13B02E65F114FB2,P2P Transfer,P2P Transfer,,30.00,960.00
+2026-11-03 12:23,TXN59051D5FD1734C56,P2P Transfer,P2P Transfer,,20.00,940.00
+2026-11-03 12:23,TXN41E0377F4CC94312,Merchant Payment,Payment to Shop 52,,100.00,840.00
+
+Opening Balance,0.00
+Total Credits,1000.00
+Total Debits,160.00
+Closing Balance,840.00
